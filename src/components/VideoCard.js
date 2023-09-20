@@ -6,11 +6,11 @@ const VideoCard = ({ video }) => {
     <div className="flex flex-wrap">
           {video.map((item) => {
               return (
-                  <Link to={'watch?v='+item.id}>
+                <Link to={"watch?v=" + item.id}>
                   {" "}
-                  <div className="max-w-xs overflow-hidden bg-white shadow-lg rounded-lg mx-auto ">
+                  <div className="max-w-xs overflow-hidden bg-white shadow-lg rounded-lg mx-auto mx-3">
+                    key={item.id}
                     <img
-                      key={item.id}
                       className="px-2 m-2 w-80 rounded-lg"
                       src={item.snippet.thumbnails.medium.url}
                       alt="Thumbnail"
