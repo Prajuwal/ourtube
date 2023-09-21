@@ -1,17 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
 
+
 const Head = () => {
-  const dispatch = useDispatch()
-  const toggleMenuHandler = ()=>{
-dispatch(toggleMenu())
-  }
+  const [searchQuery, setSearchQuery] = useState("");
+  const [queryResult, setQueryResult] = useState("");
+  const [visible,setVisible] = useState(false)
+  useEffect(() => {
+    getSearchQuery();
+  }, [searchQuery]);
+
+  const getSearchQuery = async () => {
+    const data = await fetch(
+      "http://suggestqueries.google.com/complete/search?client=chrome&ds=yt&q=" +
+        searchQuery
+    );
+
+    const jsonData = await data.json();
+    console.log("daata is " + jsonData);
+    setQueryResult(jsonData);
+    console.log(queryResult[1]);
+  };
+
+  const dispatch = useDispatch();
+  const toggleMenuHandler = () => {
+    dispatch(toggleMenu());
+  };
   return (
     <div className="grid grid-flow-col p-5 m-2 shadow-lg">
       <div className="flex col-span-1">
         <img
-        onClick={toggleMenuHandler}
+          onClick={toggleMenuHandler}
           className="h-12 cursor-pointer"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvJ_Pmd1cDf3Y8ilFgW4L5KS0Zrk5x0UYjeA&usqp=CAU"
         />
@@ -20,14 +40,30 @@ dispatch(toggleMenu())
           src="https://lh3.googleusercontent.com/3zkP2SYe7yYoKKe47bsNe44yTgb4Ukh__rBbwXwgkjNRe4PykGG409ozBxzxkrubV7zHKjfxq6y9ShogWtMBMPyB3jiNps91LoNH8A=s500"
         />
       </div>
-      <div className="col-span-10 flex">
+      <div className="col-span-10 relative">
         <input
           className="h-12 w-1/2 p-2 border border-gray-400 rounded-l-full"
           type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setVisible(true)}
+          onBlur={() => setVisible(false)}
         />
-      <button className="flex items-center justify-center p-2 border border-gray-400 bg-gray-100 rounded-r-full">
-    <span className="text-center">&#128269;</span>
-  </button>
+
+        {visible && (
+          <ul
+            className="absolute left-0  w-1/2 p-2 border border-white rounded bg-white"
+            style={{ display: queryResult[1] ? "block" : "none" }}
+          >
+            {queryResult[1]?.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        )}
+        <button className="absolute right-0 p-2 border border-gray-400 bg-gray-100 rounded-r-full">
+          <span className="text-center">&#128269;</span>
+        </button>
+        {visible}
       </div>
       <div className="col-span-1">
         <img
