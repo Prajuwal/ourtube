@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
+import { sendSearchResult } from "../utils/resultSlice";
 import { Link } from "react-router-dom";
-import { YOUTUBE_API_KEY } from "../utils/constants";
 const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [queryResult, setQueryResult] = useState([]);
   const [visible, setVisible] = useState(false);
-const [searchResult,setSearchResult]= useState([])
+  const [resultKeyword, setResultKeyword] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
     getSearchQuery();
   }, [searchQuery]);
-const [showComponent,setShowComponent] =useState(false)
 
+useEffect(() => {
  
+  dispatch(sendSearchResult(resultKeyword));
+}, [resultKeyword]);
 
   const getSearchQuery = async () => {
     const data = await fetch(
@@ -25,47 +28,14 @@ const [showComponent,setShowComponent] =useState(false)
     setQueryResult(jsonData[1]);
   };
 
-  const dispatch = useDispatch();
+  
   const toggleMenuHandler = () => {
     dispatch(toggleMenu());
   };
-const ResultSearch = ({ info }) => {
-  return (
-    <div className="flex flex-wrap">
-      {info?.map((item) => {
-        return (
-          <Link to={"watch?v=" + item.id.videoId}>
-            <div className="max-w-xs overflow-hidden bg-white shadow-lg rounded-lg mx-3">
-              <img
-                className="px-2 m-2 w-80 rounded-lg"
-                src={item.snippet.thumbnails.medium.url}
-                alt="Thumbnail"
-              />
-              <ul>
-                <li className="font-bold py-2 truncate">
-                  {item.snippet.title}
-                </li>
-                <li>{item.snippet.channelTitle}</li>
-              </ul>
-            </div>
-          </Link>
-        );
-      })}
-    </div>
-  );
-};
 
-
-  const handleSuggestionClick = async (searchQuery) => {
-setShowComponent(true)
-    const fetchedData = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${searchQuery}&type=video&key=${YOUTUBE_API_KEY}`
-    );
-    const response = await fetchedData.json();
- 
-    setSearchResult(response.items);
-   
-
+  const handleSuggestionClick = (result) => {
+    setResultKeyword(result);
+    //console.log(resultKeyword);
   };
 
   return (
@@ -91,17 +61,19 @@ setShowComponent(true)
           onFocus={() => setVisible(true)}
           onBlur={() => setVisible(false)}
         />
+
         <button onClick={() => handleSuggestionClick(searchQuery)}>
-          Search
+          <Link to="/result">Search</Link>
         </button>
-        {showComponent && <ResultSearch info={searchResult} />}
+
         {visible && queryResult.length > 0 && (
           <div className="absolute mt-10 w-60 border border-gray-400 rounded bg-white flex flex-col">
-            {queryResult.map((item) => (
+            {queryResult.map((item, index) => (
               <div
-                key={item}
+                key={index}
                 className="py-2 px-3 hover:bg-gray-200 cursor-pointer
                 text-gray-800"
+                onClick={() => handleSuggestionClick(item)}
               >
                 {item}
               </div>
@@ -114,4 +86,3 @@ setShowComponent(true)
 };
 
 export default Head;
- 
