@@ -3,10 +3,13 @@ import { YOUTUBE_API_URL } from "../utils/constants";
 import VideoCard from "./VideoCard";
 
 const VideoContainer = () => {
+
+
+
 const [videoData,setVideoData]=useState([])
   useEffect(() => {
-  getData()
-},[])
+    getData();
+  }, []);
 
   
   const getData = async() => {

@@ -16,17 +16,22 @@ const Result = () => {
     const fetchedData = await fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${resultKeyword}&type=video&key=${YOUTUBE_API_KEY}`
     );
-
+    
     const response = await fetchedData.json();
-    //  console.log(response.items);
+   
     setVideoData(response.items);
+    
   };
 
   return (
     <div className="flex flex-wrap">
-      {videoData.map((item) => {
+      {videoData?.map((item) => {
         return (
-          <Link to={"watch?v=" + item.id} key={item.id}>
+          <Link
+            to={"watch?v=" + item.id.videoId}
+            relative="path"
+             key={item.id.videoId}
+          >
             <div className="max-w-xs overflow-hidden bg-white shadow-lg rounded-lg mx-3">
               <img
                 className="px-2 m-2 w-80 rounded-lg"

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const VideoCard = ({ video }) => {
   return (
     <div className="flex flex-wrap">
-      {video.map((item) => {
+      {video?.map((item) => {
         return (
           <Link to={"watch?v=" + item.id} key={item.id}>
             <div className="max-w-xs overflow-hidden bg-white shadow-lg rounded-lg mx-3">

@@ -1,6 +1,6 @@
 
 import "./App.css";
-import Head from "./components/Head";
+
 import Body from "./components/Body";
 import { Provider } from "react-redux";
 import store from "./utils/store";
@@ -21,10 +21,23 @@ function App() {
         {
           path: "watch",
           element: <WatchPage />,
+          children: [
+            {
+              path: "watch",
+              element: <WatchPage />,
+              
+            },
+          ],
         },
         {
           path: "result",
           element: <Result />,
+          children: [
+            {
+              path: "watch",
+              element: <WatchPage />,
+            },
+          ],
         },
       ],
     },
